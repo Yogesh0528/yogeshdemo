@@ -1,0 +1,40 @@
+5.1 SELECT Name FROM Pieces;
+
+5.2 SELECT * FROM Providers;
+
+5.3 SELECT Piece, AVG(Price) AS AveragePrice
+FROM Provides
+GROUP BY Piece;
+
+5.4 SELECT P.Name
+FROM Providers AS P
+JOIN Provides AS Pr ON P.Code = Pr.Provider
+WHERE Pr.Piece = 1;
+
+5.5 SELECT Pi.Name
+FROM Pieces AS Pi
+JOIN Provides AS Pr ON Pi.Code = Pr.Piece
+WHERE Pr.Provider = 'HAL';
+
+5.6 WITH MaxPricePiece AS (
+  SELECT Piece, MAX(Price) AS MaxPrice
+  FROM Provides
+  GROUP BY Piece
+)
+SELECT P.Name AS PieceName, Pro.Name AS ProviderName, Pr.Price
+FROM Provides AS Pr
+JOIN Pieces AS P ON Pr.Piece = P.Code
+JOIN Providers AS Pro ON Pr.Provider = Pro.Code
+JOIN MaxPricePiece AS MaxP ON Pr.Piece = MaxP.Piece AND Pr.Price = MaxP.MaxPrice;
+
+5.7 INSERT INTO Provides (Piece, Provider, Price) VALUES (1, 'TNBC', 7);
+
+5.8 UPDATE Provides
+SET Price = Price + 1;
+
+5.9 DELETE FROM Provides
+WHERE Piece = 4 AND Provider = 'RBT';
+
+5.10 DELETE FROM Provides
+WHERE Provider = 'RBT';
+

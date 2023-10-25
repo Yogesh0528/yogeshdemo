@@ -1,0 +1,70 @@
+
+2.1 SELECT LastName FROM Employees;
+
+2.2  SELECT DISTINCT LastName FROM Employees;
+
+2.3 Select all the data of employees whose last name is "Smith".
+SELECT * FROM Employees WHERE LastName = 'Smith';
+
+2.4  SELECT * FROM Employees WHERE LastName = 'Smith' OR LastName = 'Doe';
+
+2.5  SELECT * FROM Employees WHERE Department = 14;
+
+2.6 Select all the data of employees that work in department 37 or department 77.
+SELECT * FROM Employees WHERE Department IN (37, 77);
+
+2.7  SELECT * FROM Employees WHERE LastName LIKE 'S%';
+
+2.8  SELECT SUM(Budget) AS TotalBudget FROM Departments;
+
+2.9  SELECT Department, COUNT(*) AS NumberOfEmployees
+FROM Employees
+GROUP BY Department;
+
+2.10 SELECT Employees.SSN, Employees.Name, Employees.LastName, Employees.Department,
+       Departments.Name AS DepartmentName, Departments.Budget
+FROM Employees
+JOIN Departments ON Employees.Department = Departments.Code;
+
+2.11 SELECT E.Name, E.LastName, D.Name AS DepartmentName, D.Budget
+FROM Employees AS E
+JOIN Departments AS D ON E.Department = D.Code;
+
+2.12 SELECT E.Name, E.LastName
+FROM Employees AS E
+JOIN Departments AS D ON E.Department = D.Code
+WHERE D.Budget > 60000;
+
+2.13 SELECT *
+FROM Departments
+WHERE Budget > (SELECT AVG(Budget) FROM Departments);
+
+2.14 SELECT D.Name
+FROM Departments AS D
+JOIN Employees AS E ON D.Code = E.Department
+GROUP BY D.Code, D.Name
+HAVING COUNT(*) > 2;
+
+2.15 SELECT E.Name, E.LastName
+FROM Employees AS E
+JOIN Departments AS D ON E.Department = D.Code
+WHERE D.Budget = (SELECT MIN(Budget) FROM Departments WHERE Budget > (SELECT MIN(Budget) FROM Departments));
+
+2.16  INSERT INTO departments (name, budget, code)
+VALUES ('Quality Assurance', 40000, 11);
+INSERT INTO Employees (SSN, Name, LastName, Department) VALUES ('847219811', 'Mary', 'Moore', 11);
+
+2.17 UPDATE Departments
+SET Budget = Budget * 0.90;
+
+2.18  SET Department = 14
+WHERE Department = 77;
+
+2.19  DELETE FROM Employees
+WHERE Department = 14;
+
+2.20 DELETE FROM Employees
+WHERE Department IN (SELECT Code FROM Departments WHERE Budget >= 60000);
+
+2.21 DELETE FROM Employees;
+

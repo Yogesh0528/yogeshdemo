@@ -1,0 +1,66 @@
+3.1 select*from warehouses;
+
+3.2 select*from boxes where value>150;
+
+3.3 select distinct contents from  boxes;
+
+3.4 select avg(value) from  boxes;
+
+3.5 select w.code , avg (value) from warehouses w join boxes b on w.code=b.warehouse group by b.warehouse;
+
+3.6 select warehouse , avg (value) as result 
+from warehouses w join boxes b on w.code=b.warehouse group by b.warehouse having avg(value)>150;
+
+3.7 SELECT b.Code AS BoxCode, w.Location AS City
+FROM Boxes b
+JOIN Warehouses w ON b.Warehouse = w.Code;
+
+3.8 SELECT w.Code AS WarehouseCode, w.Location AS City, COUNT(b.Code) AS BoxCount
+FROM Warehouses w
+LEFT JOIN Boxes b ON w.Code = b.Warehouse
+GROUP BY w.Code, w.Location;
+
+3.9  SELECT Code
+   FROM Warehouses
+   WHERE Capacity <
+   (
+     SELECT COUNT(*)
+     FROM Boxes
+     WHERE Warehouse = Warehouses.Code
+   );
+
+3.10 SELECT Code AS BoxCode
+FROM Boxes
+WHERE Warehouse IN (SELECT Code FROM Warehouses WHERE Location = 'Chicago');
+
+3.11 INSERT INTO Warehouses (Code, Location, Capacity) VALUES (6, 'New York', 3);
+
+
+3.12 INSERT INTO Boxes (Code, Contents, Value, Warehouse) VALUES ('H5RT', 'Papers', 200, 2);
+
+3.13 UPDATE Boxes
+SET Value = Value * 0.85;
+
+3.14 DELETE FROM Boxes
+WHERE Value < 100;
+
+3.15 DELETE FROM Boxes
+WHERE Warehouse IN (
+    SELECT w.Code
+    FROM Warehouses w
+    INNER JOIN (
+        SELECT Warehouse, SUM(Value) AS TotalValue
+        FROM Boxes
+        GROUP BY Warehouse
+        HAVING TotalValue > w.Capacity
+    ) s ON w.Code = s.Warehouse
+);
+
+
+3.16 ALTER TABLE Boxes
+ADD INDEX idx_Warehouse (Warehouse);
+
+3.17 SHOW INDEXES FROM Boxes;
+
+
+3.18 DROP INDEX idx_Warehouse ON Boxes;

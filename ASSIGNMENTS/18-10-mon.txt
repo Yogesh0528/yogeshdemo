@@ -1,0 +1,294 @@
+-- procedure in cmd--
+
+C:\Program Files\PostgreSQL\16\pgAdmin 4\runtime>psql --username="postgres"
+Password for user postgres:
+
+postgres=# create database dvdrental;
+CREATE DATABASE
+postgres=# exit
+
+
+C:\Program Files\PostgreSQL\16\pgAdmin 4\runtime>cd../
+
+C:\Program Files\PostgreSQL\16\pgAdmin 4>cd../
+
+
+C:\Program Files\PostgreSQL\16\bin>cd ..\
+
+
+C:\Program Files\PostgreSQL\16\bin>pg_restore -U postgres -d dvdrental C:\sampleDB\dvdrental.tar
+Password:
+
+
+C:\Program Files\PostgreSQL\16>cd pgAdmin*
+
+C:\Program Files\PostgreSQL\16\pgAdmin 4>cd runtime
+
+C:\Program Files\PostgreSQL\16\pgAdmin 4\runtime>psql --username="postgres"
+Password for user postgres:
+
+postgres=# \c dvdrental -- connection of created database--
+
+\d+ -- show database structure --
+
+\dt --show relation --
+
+
+
+
+
+
+
+select * from customer
+select first_name||' '||last_name as fullname from customer
+select 15*20;
+select 15*20+30/5-10;
+select first_name||last_name from customer order by first_name;
+select first_name,length(first_name) from customer;
+select first_name,length(first_name) from customer order by length desc;
+create table scores
+(num int)
+
+insert into scores(num) values (181),(264),(223),(null)
+
+select num from scores
+order by num nulls first;
+
+select distinct customer_id from payment;
+
+select distinct customer_id,staff_id from payment;
+
+select distinct customer_id,staff_id from payment order by customer_id;
+
+select * from customer where first_name = 'Jamie' and last_name = 'Waugh'
+
+select first_name,last_name from customer where last_name = 'Rodriguez' or first_name = 'Adam'
+
+select * from customer where first_name in ('Ann','Anne','Annie')
+
+select * from city where city like 'al%'
+
+select * from city  where country_id between 91 and 95
+
+select * from city where city <> 'Lungtan' and country_id between 91 and 95
+
+select * from city where city <> 'Lungtan' and country_id between 91 and 95 limit 5 offset 12
+
+select film_id,title from film order by title fetch first row only;
+
+select film_id,title from film order by title fetch first 5 rows only;
+
+select film_id,title from film order by title fetch first 10 rows only;
+
+select film_id,title from film order by film_id offset 2 fetch first 5 rows only;
+
+select customer_id from rental where cast( return_date as date)='2005-05-27'
+
+create table basket_a(
+a int primary key,
+fruit_a varchar(100) not null);
+
+
+create table basket_b(
+b int primary key,
+fruit_b varchar(100) not null);
+
+insert into basket_a(a,fruit_a) 
+values(1,'apple'),(2,'orange'),(3,'banana'),(4,'cucumber');
+
+insert into basket_b(b,fruit_b) 
+values(1,'orange'),(2,'apple'),(3,'watermelon'),(4,'pear');
+
+drop table basket_a;
+
+select a,fruit_a,b,fruit_b from basket_a
+inner join basket_b on fruit_a = fruit_b
+
+select a,fruit_a,b,fruit_b from basket_a
+left join basket_b on fruit_a = fruit_b
+
+select a,fruit_a,b,fruit_b from basket_a
+right  join basket_b on fruit_a = fruit_b
+
+select a,fruit_a,b,fruit_b from basket_a
+full outer join basket_b on fruit_a = fruit_b
+
+select a,fruit_a,b,fruit_b from basket_a
+full join basket_b on fruit_a = fruit_b
+where a is null or b is null
+
+select a,fruit_a,b,fruit_b from basket_a
+full join basket_b on fruit_a = fruit_b
+
+select customer.customer_id,first_name,last_name,amount,payment_date
+from customer inner join payment on customer.customer_id=payment.customer_id
+order by payment_date
+
+select customer.customer_id,first_name,last_name,amount,payment_date
+from customer inner join payment using(customer_id) where customer_id=2
+order by payment_date
+
+
+select  c.customer_id,c.first_name,c.last_name,s.first_name,s.last_name,amount,payment_date
+from customer c inner join payment p on p.customer_id=c.customer_id inner join staff s on p.staff_id=s.staff_id
+order by payment_date
+
+select film.film_id,title,inventory_id
+from film 
+left join inventory 
+on inventory.film_id=film.film_id
+order by title
+
+select film.film_id,title,inventory_id
+from film 
+left join inventory 
+on inventory.film_id=film.film_id
+order by title
+
+select f.actor_id,first_name,last_name,film_id,from 
+film_actor fa right join actor f on fa.actor_id = f.actor_id 
+
+select staff_id,first_name,last_name,manager_staff_id from 
+store fa right join staff f on fa.manager_staff_id = f.staff_id
+
+select customer_id, sum(amont) from payment
+group by customer_id
+order by sum(amount) desc
+
+select first_name || ' ' || last_name as fullname, sum(amount)
+from payment inner join customer using(customer_id)
+group by fullname
+having sum(amount)  >150
+order by sum (amount)  desc
+
+select * from basket_a 
+union
+select * from basket_b
+
+
+select fruit_a from basket_a 
+union 
+select fruit_b from basket_b
+
+select fruit_a from basket_a 
+intersect
+select fruit_b from basket_b
+
+select fruit_a from basket_a 
+except
+select fruit_b from basket_b
+
+select fruit_b from basket_b 
+except
+select fruit_a from basket_a
+
+select customer_id, staff_id,sum(amount)from payment
+group by
+rollup(customer_id,staff_id)
+order by customer_id,staff_id
+
+select district,city_id,count(address) from address
+group by 
+cube(district,city_id)
+order by district
+
+create table students
+(student_id serial primary key,
+name varchar unique,
+email varchar not null, 
+active bool not null default true);
+
+insert into students (name,email)
+values
+('steve','contacts@gmail.com'),
+('tim','tim@gmail.com'),
+('rebecca','reb@gmail.com')
+
+insert into students (name,email)
+values
+('steves','steves@gmail.com')
+on conflict on constraint students_name_key
+do nothing;
+
+alter table students add fees_paid int 
+
+alter table students 
+add constraint fees_discount_check
+check(
+fees_paid>0
+)
+
+update students 
+set fees_paid = 10000
+where name = 'steve'
+
+select * from students
+
+update students 
+set fees_paid = 8000
+where name = 'rebecca'
+
+update students 
+set fees_paid = 1000
+where name = 'steves'
+
+create table orders (
+id serial not null primary key,
+info json not null)
+
+insert into orders (info)
+values
+('{"customer" :"lilly","items":{"product":"toothbrush","quantity":"24","price":"499"}}'),
+('{"customer" :"josh william","items":{"product":"toy car","quantity":"1","price":"1499"}}'),
+('{"customer" :"mary clark","items":{"product":"toy train","quantity":"2","price":"1000"}}')
+
+
+select  info-> 'customer' as "customer_name" , info-> 'items'->> 'product' as "item_name" from orders
+
+
+select * from orders
+
+select info->> 'customer'
+as "customer_name" 
+from orders 
+where info->> 'items'->"product" = "toy car"
+
+
+select  info-> 'customer' as "customer_name" , info-> 'items'->> 'product' as "item_name" from orders
+
+
+select * from orders
+
+select info->> 'customer'
+as "customer_name" 
+from orders 
+where info->> 'items'->>"product" = "toy car"
+
+create table contacts 
+(id serial primary key,
+name varchar(100),
+phones text[]);
+
+insert into contacts (name,phones )
+values
+('william gate',array['(408)-589-5846','(408)-589-555']),
+('prachi joshi',array['(91)-589-5846','(91)-589-555'])
+
+select name,phones from contacts
+
+select name,phones from contacts where phones[1] = '(408)-589-5846'
+
+update contacts 
+set phones[3] = '(91)-7898087'
+where name = 'prachi joshi'
+
+select array_length(phones,1) from contacts
+
+select name,unnest(phones) from contacts
+
+CREATE TABLE demo_table (
+demo_column VARCHAR(100) NOT NULL,
+INDEX(demo_column(10))
+);
+
+

@@ -1,0 +1,164 @@
+use sakila;
+
+1.a select * from actor;
+
+1.b select last_name from actor;
+
+1.c select title, rental_rate,description,rental_duration,rental_rate,rental_duration*rental_rate as total_rental_cost  from film;
+
+2.a select distinct last_name from actor;
+
+2.b select distinct postal_code from address;
+
+2.c select distinct rating from  film;
+
+3.a select title,description,rating,length from film
+where length >= 180;
+
+3.b select payment_id, amount, payment_date from 
+payment where payment_date >= '2005-05-27';
+
+3.c select customer_id,amount, payment_date from payment 
+where date(payment_date) = '2005-05-27';
+
+3.d select * from customer 
+where first_name like '%m' and last_name like 's%';
+
+3.e select * from customer 
+where active = 0 or last_name like '%m';
+
+3.f select *
+from category
+where category_id > 4 and (name like 'C%' OR name like 'S%' OR name like 'T%');
+
+3.g select staff_id,first_name,last_name,address_id,email,store_id,active,username,last_update
+from staff
+where password is not null;
+
+3.h select staff_id,first_name,last_name,address_id,email,store_id,active,username,last_update
+from staff
+where password is null;
+
+4.a select phone,district from address 
+where district in ('California', 'England', 'Taipei', 'West Java');
+
+4.b select payment_id, amount, payment_date
+from payment
+where date(payment_date) in ('2005-05-25', '2005-05-27', '2005-05-29');
+
+4.c select *
+from film
+where rating in ('G', 'PG-13', 'NC-17');
+
+5.a select *
+from payment
+where payment_date between '2005-05-25 00:00:00'and '2005-05-25 23:59:59';
+
+5.a select *
+from payment
+where payment_date >= '2005-05-25 00:00:00' and payment_date < '2005-05-25 23:59:59';
+
+5.b select title, rental_rate,description,rental_duration,
+rental_rate,rental_duration*rental_rate as total_rental_cost,length(description) as len_des 
+ from film where length(description) between 100 and 220;
+ 
+6.a select title, description, release_year
+from film
+where description like 'A Thoughtful%';
+
+6.b select Title, Description, Rental_Duration
+from film
+where Description like '% Boat';
+
+6.c SELECT Title, Length, Description, Rental_Rate
+FROM film
+WHERE Description LIKE '%Database%'
+AND Length > 180;
+
+7.a SELECT *
+FROM payment
+LIMIT 20;
+
+7.b SELECT payment_date, amount
+FROM payment
+WHERE amount > 5
+LIMIT 1000, 1000; 
+
+7.c  SELECT *
+FROM customer
+LIMIT 100,100;
+
+8.a SELECT *
+FROM film
+ORDER BY length ASC;
+
+8.b SELECT DISTINCT rating
+FROM film
+ORDER BY rating DESC;
+
+8.c SELECT payment_date, amount
+FROM payment
+ORDER BY amount DESC
+LIMIT 20;
+
+8.d SELECT title, description, special_features, length, rental_duration
+FROM film
+WHERE special_features LIKE '%Behind the Scenes%'
+AND length <= 120 -- Assuming film length is in minutes (2 hours)
+AND rental_duration BETWEEN 5 AND 7
+ORDER BY length DESC
+LIMIT 10;
+
+9.a SELECT
+    customer.first_name AS customer_first_name,
+    customer.last_name AS customer_last_name,
+    actor.first_name AS actor_first_name,
+    actor.last_name AS actor_last_name
+FROM customer
+LEFT JOIN actor ON customer.last_name = actor.last_name;
+
+9.b SELECT
+    customer.first_name AS customer_first_name,
+    customer.last_name AS customer_last_name,
+    actor.first_name AS actor_first_name,
+    actor.last_name AS actor_last_name
+FROM customer
+RIGHT JOIN actor ON customer.last_name = actor.last_name;
+
+9.c SELECT
+    customer.first_name AS customer_first_name,
+    customer.last_name AS customer_last_name,
+    actor.first_name AS actor_first_name,
+    actor.last_name AS actor_last_name
+FROM customer
+INNER JOIN actor ON customer.last_name = actor.last_name;
+
+9.d SELECT
+    city.city AS city_name,
+    country.country AS country_name
+FROM city
+LEFT JOIN country ON city.country_id = country.country_id;
+
+9.e SELECT
+    film.title,
+    film.description,
+    film.release_year,
+    language.name AS language
+FROM film
+LEFT JOIN language ON film.language_id = language.language_id;
+
+9.f SELECT
+    staff.first_name,
+    staff.last_name,
+    address.address,
+    address.address2,
+    city.city AS city_name,
+    address.district,
+    address.postal_code
+FROM staff
+LEFT JOIN address ON staff.address_id = address.address_id
+LEFT JOIN city ON address.city_id = city.city_id;
+
+
+
+

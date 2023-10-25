@@ -1,0 +1,149 @@
+1. List full details of all hotels.
+
+SELECT * FROM Hotels;
+
+'1', 'Hotel A', 'New York'
+'2', 'Hotel B', 'Los Angeles'
+'3', 'Hotel C', 'New York'
+'4', 'Hotel D', 'Chicago'
+'5', 'Hotel E', 'San Francisco'
+'6', 'Hotel F', 'Boston'
+'7', 'Hotel G', 'Las Vegas'
+'8', 'Hotel H', 'New York'
+'9', 'Hotel I', 'Miami'
+'10', 'Hotel J', 'Los Angeles'
+
+2. List full details of all hotels in New York.
+
+SELECT * FROM Hotels WHERE City = 'New York';
+
+'1', 'Hotel A', 'New York'
+'3', 'Hotel C', 'New York'
+'8', 'Hotel H', 'New York'
+
+3. List the names and cities of all guests, ordered according to their cities.
+
+SELECT Name, City FROM Guest ORDER BY City;
+
+'Frank', 'Boston'
+'David', 'Chicago'
+'Grace', 'Las Vegas'
+'Bob', 'Los Angeles'
+'Jack', 'Los Angeles'
+'Ivy', 'Miami'
+'Alice', 'New York'
+'Charlie', 'New York'
+'Helen', 'New York'
+'Eve', 'San Francisco'
+
+4. List all details for non-smoking rooms in ascending order of price.
+
+SELECT * FROM Room WHERE Type = 'N' ORDER BY Price;
+
+'101', '1', 'N', '150.00'
+'301', '3', 'N', '160.00'
+'501', '5', 'N', '170.00'
+'401', '4', 'N', '175.00'
+'201', '2', 'N', '180.00'
+'202', '2', 'N', '190.00'
+
+5. List the number of hotels there are.
+
+SELECT COUNT(*) AS Number_of_Hotels FROM Hotels;
+
+'10'
+
+6.  List the cities in which guests live. Each city should be listed only once.
+
+SELECT DISTINCT City FROM Guest;
+
+'New York'
+'Los Angeles'
+'Chicago'
+'San Francisco'
+'Boston'
+'Las Vegas'
+'Miami'
+
+7. List the average price of a room.
+
+SELECT AVG(Price) AS Average_Price FROM Room;
+
+'188.500000'
+
+8.  List hotel names, their room numbers, and the type of that room.
+
+SELECT H.Name AS Hotel_Name, R.Room_No, R.Type
+FROM Hotels H
+INNER JOIN Room R ON H.Hotel_No = R.Hotel_No;
+
+'Hotel A', '101', 'N'
+'Hotel A', '102', 'S'
+'Hotel B', '201', 'N'
+'Hotel B', '202', 'N'
+'Hotel C', '301', 'N'
+'Hotel C', '302', 'S'
+'Hotel D', '401', 'N'
+'Hotel D', '402', 'S'
+'Hotel E', '501', 'N'
+'Hotel E', '502', 'S'
+
+9. List the hotel names, booking dates, and room numbers for all hotels in New York.
+
+SELECT H.Name AS Hotel_Name, B.Date_From, B.Date_To, B.Room_No
+FROM Hotels H
+INNER JOIN Booking B ON H.Hotel_No = B.Hotel_No
+WHERE H.City = 'New York';
+
+'Hotel A', '2023-10-01', '2023-10-05', '101'
+'Hotel A', '2023-10-02', '2023-10-06', '102'
+'Hotel C', '2023-10-05', '2023-10-09', '301'
+'Hotel C', '2023-10-06', '2023-10-10', '302'
+
+10. What is the number of bookings that started in the month of September?
+
+SELECT COUNT(*) AS September_Bookings
+FROM Booking
+WHERE MONTH(Date_From) = 9;
+
+'0'
+
+11. List the names and cities of guests who began a stay in New York in August.
+
+SELECT G.Name, G.City
+FROM Guest G
+JOIN Booking B ON G.Guest_No = B.Guest_No
+WHERE G.City = 'New York' AND MONTH(B.Date_From) = 8;
+
+12. List the hotel names and room numbers of any hotel rooms that have not been booked.
+
+SELECT H.Name AS Hotel_Name, R.Room_No
+FROM Hotels H
+JOIN Room R ON H.Hotel_No = R.Hotel_No
+LEFT JOIN Booking B ON R.Room_No = B.Room_No AND R.Hotel_No = B.Hotel_No
+WHERE B.Hotel_No IS NULL;
+
+'Hotel E', 'San Francisco'
+
+13. List the hotel name and city of the hotel with the highest priced room.
+
+SELECT H.Name AS Hotel_Name, R.Room_No, H.City, R.Price
+FROM Hotels H
+JOIN Room R ON H.Hotel_No = R.Hotel_No
+WHERE R.Price < (SELECT MIN(Price) FROM Room WHERE Hotel_No IN (SELECT Hotel_No FROM Hotels WHERE City = 'Boston'));
+
+14. List hotel names, room numbers, cities, and prices for hotels that have rooms with prices lower than the lowest priced room in a Boston hotel.
+
+SELECT H.City, AVG(R.Price) AS Average_Price
+FROM Hotels H
+JOIN Room R ON H.Hotel_No = R.Hotel_No
+GROUP BY H.City;
+
+15. List the average price of a room grouped by city.
+
+'New York', '180.000000'
+'Los Angeles', '185.000000'
+'Chicago', '197.500000'
+'San Francisco', '200.000000'
+
+

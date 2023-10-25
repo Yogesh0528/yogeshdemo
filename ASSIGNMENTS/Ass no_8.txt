@@ -1,0 +1,72 @@
+
+ 8.1 
+
+select distinct p.name from physician p join undergoes u on p.employeeid = u.physician
+join procedures pr on u.procedures = pr.code
+where pr.code not in (select t.treatment from trained_in t where t.physician = p.employeeid);
+
+
+8.2 
+
+select distinct p.name as physicianname, pr.name as procedurename, u.dateundergoes as proceduredate, pat.name as patientname
+from physician p
+join undergoes u on p.employeeid = u.physician
+join procedures pr on u.procedures = pr.code
+join patient pat on u.patient = pat.ssn
+where pr.code not in (select t.treatment from trained_in t where t.physician = p.employeeid);
+
+
+8.3 
+
+select distinct p.name from physician p join undergoes u on p.employeeid = u.physician
+join trained_in t on p.employeeid = t.physician and u.procedures = t.treatment
+where u.dateundergoes > t.certificationexpires;
+
+
+8.4 
+
+select distinct p.name as physicianname, pr.name as procedurename, u.dateundergoes as proceduredate, pat.name as patientname, t.certificationexpires
+from physician p join undergoes u on p.employeeid = u.physician
+join procedures pr on u.procedures = pr.code
+join patient pat on u.patient = pat.ssn
+join trained_in t on p.employeeid = t.physician and u.procedures = t.treatment
+where u.dateundergoes > t.certificationexpires;
+
+
+8.5 
+
+select pat.name as patientname, phy.name as physicianname, n.name as nursename, a.start, a.end, a.examinationroom, pcp.name as primarycarephysician
+from appointment a join patient pat on a.patient = pat.ssn
+join physician phy on a.physician = phy.employeeid
+left join nurse n on a.prepnurse = n.employeeid
+join physician pcp on pat.pcp = pcp.employeeid
+where a.physician != pat.pcp;
+
+ 8.6 
+
+select * from Undergoes U
+where Patient <> (
+  select Patient from Stay S
+  where U.Stay = S.StayID
+   );
+
+ 8.7 
+
+select n.name from nurse n inner join room r on n.registered=r.unavailable where r.roomnumber=123;
+
+
+8.8 
+select examinationroom, count(*) as num_appointments from appointment group by examinationroom;
+
+8.9 
+
+select distinct p.name as patientname, pcp.name as primarycarephysician
+from patient p join prescribes ps on p.ssn = ps.patient
+join medication m on ps.medication = m.code
+join undergoes u on p.ssn = u.patient
+join procedures pr on u.procedures = pr.code
+join appointment a on p.ssn = a.patient
+join nurse n on a.prepnurse = n.employeeid
+join physician pcp on p.pcp = pcp.employeeid
+where m.code is not null and pr.cost > 5000 and n.registered = 1 
+group by p.name, pcp.name having count(distinct n.employeeid) >= 2;
